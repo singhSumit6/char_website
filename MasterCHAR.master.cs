@@ -102,8 +102,6 @@ public partial class MasterCHAR : System.Web.UI.MasterPage
             client_info.OrgEmail = dr["OrgEmail"].ToString();
             client_info.OrgMobile = dr["OrgMobile"].ToString();
             client_info.RegState = dr["RegState"].ToString();
-
-
         }
     }
 

@@ -254,3 +254,215 @@ BEGIN
             NULL AS UserId;  
     END  
 END  
+go
+
+Create OR Alter PRocedure sp_GetAllDistricts
+@StateId Int
+AS
+Begin
+  
+  Select '0' as ID, 'Select Disctrict' as Name
+  
+  UNION All 
+
+  Select District_Name as ID, District_Name as Name From Loc_Districts
+  Where State_Id = @StateId
+End
+go
+
+Alter PROCEDURE [dbo].[usp_Upsert_IA_BasicDetail]  
+(  
+    @Id                 INT = 0,   -- 0 = Insert, >0 = Update  
+    @Reg_Id             INT,  
+  
+    -- BASIC DETAIL  
+    @OrgType            VARCHAR(100),  
+    @ActRegistered      VARCHAR(200) = NULL,  
+  
+    @RegistrationNumber VARCHAR(100),  
+    @RegistrationDate   DATE = NULL,  
+  
+    @TAN                VARCHAR(20) = NULL,  
+  
+    -- COMMUNICATION ADDRESS (BASIC)  
+    @CommAddress        VARCHAR(300),  
+    @CommState          VARCHAR(100),  
+    @CommDistrict       VARCHAR(100),  
+    @CommPIN            VARCHAR(10),  
+  
+    -- DOCUMENTS  
+    @RC_File            VARCHAR(300) = NULL,  
+    @MOA_File           VARCHAR(300) = NULL,  
+    @PAN_File           VARCHAR(300) = NULL,  
+  
+    -- REGISTRATION (MASTER)  
+    @RegAddress         VARCHAR(300),  
+    @RegState           VARCHAR(100),  
+    @RegDistrict        VARCHAR(100),  
+    @RegPIN             VARCHAR(10),  
+  
+    @OrgMobile          VARCHAR(15),  
+    @OrgEmail           VARCHAR(150),  
+  
+    @AuthName           VARCHAR(150),  
+    @AuthDesig          VARCHAR(100),  
+    @AuthMobile         VARCHAR(15),  
+    @AuthEmail          VARCHAR(150)  
+)  
+AS  
+BEGIN  
+    SET NOCOUNT ON;  
+  
+    DECLARE @OutId INT;  
+  
+    BEGIN TRY  
+  
+        BEGIN TRANSACTION;  
+  
+        /* ================= INSERT ================= */  
+  
+        IF (@Id = 0)  
+        BEGIN  
+  
+            IF EXISTS (SELECT 1 FROM CAHR_BasicDetail WHERE Reg_Id = @Reg_Id)  
+            BEGIN  
+                ROLLBACK;  
+  
+                SELECT  
+                    0 AS Status,  
+                    'Basic details already exist.' AS Message,  
+                    0 AS Id;  
+                RETURN;  
+            END  
+  
+  
+            INSERT INTO CAHR_BasicDetail  
+            (  
+                Reg_Id,  
+                OrgType,  
+                ActRegistered,  
+                RegistrationNumber,  
+                RegistrationDate,  
+                TAN,  
+  
+                CommAddress,  
+                CommState,  
+                CommDistrict,  
+                CommPIN,  
+  
+                RC_File,  
+                MOA_File,  
+                PAN_File,  
+  
+                CreatedOn  
+            )  
+            VALUES  
+            (  
+                @Reg_Id,  
+                @OrgType,  
+                @ActRegistered,  
+                @RegistrationNumber,  
+                @RegistrationDate,  
+                @TAN,  
+  
+                @CommAddress,  
+                @CommState,  
+                @CommDistrict,  
+                @CommPIN,  
+  
+                @RC_File,  
+                @MOA_File,  
+                @PAN_File,  
+  
+                GETDATE()  
+            );  
+  
+            SET @OutId = SCOPE_IDENTITY();  
+        END  
+  
+  
+        /* ================= UPDATE ================= */  
+  
+        ELSE  
+        BEGIN  
+  
+            UPDATE CAHR_BasicDetail  
+            SET  
+                OrgType            = @OrgType,  
+                ActRegistered      = @ActRegistered,  
+                RegistrationNumber = @RegistrationNumber,  
+                RegistrationDate   = @RegistrationDate,  
+                TAN                = @TAN,  
+  
+                CommAddress        = @CommAddress,  
+                CommState          = @CommState,  
+                CommDistrict       = @CommDistrict,  
+                CommPIN            = @CommPIN,  
+  
+                RC_File            = ISNULL(@RC_File, RC_File),  
+                MOA_File           = ISNULL(@MOA_File, MOA_File),  
+                PAN_File           = ISNULL(@PAN_File, PAN_File)  
+  
+            WHERE Id = @Id  
+              AND Reg_Id = @Reg_Id;  
+  
+  
+            IF (@@ROWCOUNT = 0)  
+            BEGIN  
+                ROLLBACK;  
+  
+                SELECT  
+                    0 AS Status,  
+                    'Invalid record.' AS Message,  
+                    0 AS Id;  
+                RETURN;  
+            END  
+  
+            SET @OutId = @Id;  
+        END  
+  
+  
+        /* ================= UPDATE REGISTRATION ================= */  
+  
+        UPDATE CAHR_Registration  
+    SET  
+            -- Registered Address  
+            Address  = ISNULL(NULLIF(@RegAddress,''), Address),  
+            State    = ISNULL(NULLIF(@RegState,''), State),  
+            District = ISNULL(NULLIF(@RegDistrict,''), District),  
+            PIN_Code = ISNULL(NULLIF(@RegPIN,''), PIN_Code),  
+  
+            -- Contact  
+            Phone = ISNULL(NULLIF(@OrgMobile,''), Phone),  
+            Email = ISNULL(NULLIF(@OrgEmail,''), Email),  
+  
+            -- Authorized Person  
+            AuthName   = ISNULL(NULLIF(@AuthName,''), AuthName),  
+            AuthDesig  = ISNULL(NULLIF(@AuthDesig,''), AuthDesig),  
+            AuthMobile = ISNULL(NULLIF(@AuthMobile,''), AuthMobile),  
+            AuthEmail  = ISNULL(NULLIF(@AuthEmail,''), AuthEmail)  
+  
+        WHERE Reg_Id = @Reg_Id;  
+  
+  
+        COMMIT TRANSACTION;  
+  
+  
+        SELECT  
+            1 AS Status,  
+            'Saved successfully.' AS Message,  
+            @OutId AS Id;  
+  
+    END TRY  
+  
+    BEGIN CATCH  
+  
+        ROLLBACK TRANSACTION;  
+  
+        SELECT  
+            0 AS Status,  
+            ERROR_MESSAGE() AS Message,  
+            0 AS Id;  
+  
+    END CATCH  
+END  

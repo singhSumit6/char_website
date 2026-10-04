@@ -1,270 +1,370 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterCHAR.master" AutoEventWireup="true" CodeFile="IA_Basics.aspx.cs" Inherits="IA_Basics" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <style>
+        .field-error {
+            color: #dc3545;
+            font-size: 12px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .required-star {
+            color: #dc3545;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="Server">
-  
-    <div class="card shadow-sm mb-4">
-        <asp:HiddenField ID="hfBasicId" runat="server" />
-        <div class="card-header bg-light">
-            <h5 class="mb-0 text-primary">
-                <i class="fa fa-building"></i>Organization Details
-            </h5>
-        </div>
 
+    <asp:HiddenField ID="hfBasicId" runat="server" />
+
+    <!-- ORGANIZATION DETAILS -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0 text-primary">Organization Details</h5>
+        </div>
         <div class="card-body">
             <div class="row">
 
                 <div class="col-md-12 mb-3">
-                    <label class="mb-1">Organization Name</label>
-                    <asp:TextBox ID="txtOrgName" runat="server"
-                        CssClass="form-control form-control-lg" />
+                    <label>Organization Name <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtOrgName" runat="server" CssClass="form-control form-control-lg" />
+                    <asp:RequiredFieldValidator ID="rfvOrgName" runat="server"
+                        ControlToValidate="txtOrgName" ErrorMessage="Organization name is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">Organization Type</label>
-                    <asp:DropDownList ID="ddlOrgType" runat="server"
-                        CssClass="form-control">
+                    <label>Organization Type <span class="required-star">*</span></label>
+                    <asp:DropDownList ID="ddlOrgType" runat="server" CssClass="form-control">
                         <asp:ListItem Value="">-- Select --</asp:ListItem>
-                        <asp:ListItem>NGO</asp:ListItem>
-                        <asp:ListItem>Trust</asp:ListItem>
-                        <asp:ListItem>Society</asp:ListItem>
-                        <asp:ListItem>Section 8 Company</asp:ListItem>
+                        <asp:ListItem Value="NGO">NGO</asp:ListItem>
+                        <asp:ListItem Value="Trust">Trust</asp:ListItem>
+                        <asp:ListItem Value="Society">Society</asp:ListItem>
+                        <asp:ListItem Value="Section 8 Company">Section 8 Company</asp:ListItem>
                     </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvOrgType" runat="server"
+                        ControlToValidate="ddlOrgType" InitialValue=""
+                        ErrorMessage="Select organization type."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
+                </div>
+
+              
+                <div class="col-md-4 mb-3">
+                    <label>Registration Number <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtRegNo" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvRegNo" runat="server"
+                        ControlToValidate="txtRegNo" ErrorMessage="Registration number is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">Act Registered Under</label>
-                    <asp:TextBox ID="txtActRegistered" runat="server"
-                        CssClass="form-control" />
+                    <label>Registration Date <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtRegDate" runat="server" TextMode="Date" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvRegDate" runat="server"
+                        ControlToValidate="txtRegDate" ErrorMessage="Registration date is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">Registration Number</label>
-                    <asp:TextBox ID="txtRegNo" runat="server"
-                        CssClass="form-control" />
+                    <label>PAN <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtPAN" runat="server" CssClass="form-control" MaxLength="10" />
+                    <asp:RequiredFieldValidator ID="rfvPAN" runat="server"
+                        ControlToValidate="txtPAN" ErrorMessage="PAN is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
+                    <asp:RegularExpressionValidator ID="revPAN" runat="server"
+                        ControlToValidate="txtPAN" ValidationExpression="^[A-Za-z]{5}[0-9]{4}[A-Za-z]$"
+                        ErrorMessage="Enter a valid PAN." CssClass="field-error"
+                        Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="mb-1">Registration Date</label>
-                    <asp:TextBox ID="txtRegDate" runat="server"
-                        TextMode="Date"
-                        CssClass="form-control" />
-                </div>
-
-                <div class="col-md-4 mb-3">
-                    <label class="mb-1">PAN</label>
-                    <asp:TextBox ID="txtPAN" runat="server"
-                        CssClass="form-control"
-                        MaxLength="10" />
-                </div>
-
-                <div class="col-md-4 mb-3">
-                    <label class="mb-1">TAN</label>
-                    <asp:TextBox ID="txtTAN" runat="server"
-                        CssClass="form-control" />
-                </div>
+              
 
             </div>
         </div>
     </div>
 
+    <!-- REGISTERED ADDRESS -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0 text-primary">
-                <i class="fa fa-map-marker-alt"></i>Registered Address
-            </h5>
+            <h5 class="mb-0 text-primary">Registered Address</h5>
         </div>
-
         <div class="card-body">
             <div class="row">
 
                 <div class="col-md-12 mb-3">
-                    <label class="mb-1">Full Address</label>
+                    <label>Full Address <span class="required-star">*</span></label>
                     <asp:TextBox ID="txtRegAddress" runat="server"
-                        TextMode="MultiLine" Rows="2"
-                        CssClass="form-control" />
+                        TextMode="MultiLine" Rows="2" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvRegAddress" runat="server"
+                        ControlToValidate="txtRegAddress" ErrorMessage="Registered address is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">State</label>
+                    <label>State <span class="required-star">*</span></label>
                     <asp:DropDownList ID="ddlRegState" runat="server"
-                        CssClass="form-control" />
+                        CssClass="form-control" DataSourceID="DS_States"
+                        DataTextField="State_Name" DataValueField="State_Id"
+                        AppendDataBoundItems="true" AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlRegState_SelectedIndexChanged">
+                        <asp:ListItem Value="0">Select State</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvRegState" runat="server"
+                        ControlToValidate="ddlRegState" InitialValue="0"
+                        ErrorMessage="Select registered state."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">District</label>
-                    <asp:TextBox ID="txtRegDistrict" runat="server"
-                        CssClass="form-control" />
+                    <label>District <span class="required-star">*</span></label>
+                    <asp:DropDownList ID="ddlRegDistrict" runat="server" CssClass="form-control">
+                        <asp:ListItem Value="0">Select District</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvRegDistrict" runat="server"
+                        ControlToValidate="ddlRegDistrict" InitialValue="0"
+                        ErrorMessage="Select registered district."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">Tehsil</label>
-                    <asp:TextBox ID="txtRegTehsil" runat="server"
-                        CssClass="form-control" />
+                    <label>Tehsil <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtRegTehsil" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvRegTehsil" runat="server"
+                        ControlToValidate="txtRegTehsil" ErrorMessage="Tehsil is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">PIN</label>
-                    <asp:TextBox ID="txtRegPIN" runat="server"
-                        CssClass="form-control"
-                        MaxLength="6" />
+                    <label>PIN <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtRegPIN" runat="server" CssClass="form-control" MaxLength="6" />
+                    <asp:RequiredFieldValidator ID="rfvRegPIN" runat="server"
+                        ControlToValidate="txtRegPIN" ErrorMessage="PIN is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
+                    <asp:RegularExpressionValidator ID="revRegPIN" runat="server"
+                        ControlToValidate="txtRegPIN" ValidationExpression="^[0-9]{6}$"
+                        ErrorMessage="Enter a valid 6-digit PIN."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
             </div>
         </div>
     </div>
 
+    <!-- COMMUNICATION ADDRESS -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light d-flex justify-content-between">
-            <h5 class="mb-0 text-primary">
-                <i class="fa fa-home"></i>Communication Address
-            </h5>
-
+            <h5 class="mb-0 text-primary">Communication Address</h5>
             <asp:CheckBox ID="chkSameAddress" runat="server"
-                Text=" Same as Registered"
-                AutoPostBack="true"
+                Text=" Same as Registered" AutoPostBack="true"
                 OnCheckedChanged="chkSameAddress_CheckedChanged" />
         </div>
-
         <div class="card-body">
             <div class="row">
 
                 <div class="col-md-12 mb-3">
-                    <label class="mb-1">Full Address</label>
+                    <label>Full Address <span class="required-star">*</span></label>
                     <asp:TextBox ID="txtCommAddress" runat="server"
-                        TextMode="MultiLine" Rows="2"
-                        CssClass="form-control" />
+                        TextMode="MultiLine" Rows="2" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvCommAddress" runat="server"
+                        ControlToValidate="txtCommAddress" ErrorMessage="Communication address is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">State</label>
+                    <label>State <span class="required-star">*</span></label>
                     <asp:DropDownList ID="ddlCommState" runat="server"
-                        CssClass="form-control" />
+                        CssClass="form-control" DataSourceID="DS_States"
+                        DataTextField="State_Name" DataValueField="State_Id"
+                        AppendDataBoundItems="true" AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlCommState_SelectedIndexChanged">
+                        <asp:ListItem Value="0">Select State</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvCommState" runat="server"
+                        ControlToValidate="ddlCommState" InitialValue="0"
+                        ErrorMessage="Select communication state."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">District</label>
-                    <asp:TextBox ID="txtCommDistrict" runat="server"
-                        CssClass="form-control" />
+                    <label>District <span class="required-star">*</span></label>
+                    <asp:DropDownList ID="ddlCommDistrict" runat="server" CssClass="form-control">
+                        <asp:ListItem Value="0">Select District</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvCommDistrict" runat="server"
+                        ControlToValidate="ddlCommDistrict" InitialValue="0"
+                        ErrorMessage="Select communication district."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">PIN</label>
-                    <asp:TextBox ID="txtCommPIN" runat="server"
-                        CssClass="form-control" />
+                    <label>PIN <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtCommPIN" runat="server" CssClass="form-control" MaxLength="6" />
+                    <asp:RequiredFieldValidator ID="rfvCommPIN" runat="server"
+                        ControlToValidate="txtCommPIN" ErrorMessage="Communication PIN is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
+                    <asp:RegularExpressionValidator ID="revCommPIN" runat="server"
+                        ControlToValidate="txtCommPIN" ValidationExpression="^[0-9]{6}$"
+                        ErrorMessage="Enter a valid 6-digit PIN."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
             </div>
         </div>
     </div>
 
+    <!-- CONTACT DETAILS -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0 text-primary">
-                <i class="fa fa-phone"></i>Contact Details
-            </h5>
+            <h5 class="mb-0 text-primary">Contact Details</h5>
         </div>
-
         <div class="card-body">
             <div class="row">
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">Organization Mobile</label>
+                    <label>Organization Mobile <span class="required-star">*</span></label>
                     <asp:TextBox ID="txtOrgMobile" runat="server"
-                        CssClass="form-control" />
+                        CssClass="form-control" MaxLength="10" />
+                    <asp:RequiredFieldValidator ID="rfvOrgMobile" runat="server"
+                        ControlToValidate="txtOrgMobile" ErrorMessage="Mobile is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
+                    <asp:RegularExpressionValidator ID="revOrgMobile" runat="server"
+                        ControlToValidate="txtOrgMobile" ValidationExpression="^[6-9][0-9]{9}$"
+                        ErrorMessage="Enter a valid 10-digit mobile number."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">Organization Email</label>
+                    <label>Organization Email <span class="required-star">*</span></label>
                     <asp:TextBox ID="txtOrgEmail" runat="server"
-                        TextMode="Email"
-                        CssClass="form-control" />
+                        TextMode="Email" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvOrgEmail" runat="server"
+                        ControlToValidate="txtOrgEmail" ErrorMessage="Organization email is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">Website</label>
-                    <asp:TextBox ID="txtWebsite" runat="server"
-                        CssClass="form-control" />
+                    <label>Website <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtWebsite" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvWebsite" runat="server"
+                        ControlToValidate="txtWebsite" ErrorMessage="Website is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
             </div>
         </div>
     </div>
 
+    <!-- AUTHORIZED SIGNATORY -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0 text-primary">
-                <i class="fa fa-user-tie"></i>Authorized Signatory
-            </h5>
+            <h5 class="mb-0 text-primary">Authorized Signatory</h5>
         </div>
-
         <div class="card-body">
             <div class="row">
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">Name</label>
-                    <asp:TextBox ID="txtAuthName" runat="server"
-                        CssClass="form-control" />
+                    <label>Name <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtAuthName" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvAuthName" runat="server"
+                        ControlToValidate="txtAuthName" ErrorMessage="Name is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">Designation</label>
-                    <asp:TextBox ID="txtAuthDesig" runat="server"
-                        CssClass="form-control" />
+                    <label>Designation <span class="required-star">*</span></label>
+                    <asp:TextBox ID="txtAuthDesig" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvAuthDesig" runat="server"
+                        ControlToValidate="txtAuthDesig" ErrorMessage="Designation is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">Mobile</label>
+                    <label>Mobile <span class="required-star">*</span></label>
                     <asp:TextBox ID="txtAuthMobile" runat="server"
-                        CssClass="form-control" />
+                        CssClass="form-control" MaxLength="10" />
+                    <asp:RequiredFieldValidator ID="rfvAuthMobile" runat="server"
+                        ControlToValidate="txtAuthMobile" ErrorMessage="Authorized mobile is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
+                    <asp:RegularExpressionValidator ID="revAuthMobile" runat="server"
+                        ControlToValidate="txtAuthMobile" ValidationExpression="^[6-9][0-9]{9}$"
+                        ErrorMessage="Enter a valid 10-digit mobile number."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="mb-1">Email</label>
+                    <label>Email <span class="required-star">*</span></label>
                     <asp:TextBox ID="txtAuthEmail" runat="server"
-                        TextMode="Email"
-                        CssClass="form-control" />
+                        TextMode="Email" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvAuthEmail" runat="server"
+                        ControlToValidate="txtAuthEmail" ErrorMessage="Authorized email is required."
+                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
             </div>
         </div>
     </div>
 
+    <!-- DOCUMENTS -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0 text-primary">
-                <i class="fa fa-file-upload"></i>Upload Documents
-            </h5>
+            <h5 class="mb-0 text-primary">Upload Documents</h5>
         </div>
-
         <div class="card-body">
             <div class="row">
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">Registration Certificate</label>
-                    <asp:FileUpload ID="fuRC" runat="server"
-                        CssClass="form-control" />
+                    <label>Registration Certificate <span class="required-star">*</span></label>
+                    <asp:FileUpload ID="fuRC" runat="server" CssClass="form-control" />
+                    <asp:CustomValidator ID="cvRC" runat="server"
+                        ErrorMessage="Registration certificate is required."
+                        CssClass="field-error" Display="Dynamic"
+                        ValidationGroup="BasicDetails"
+                        OnServerValidate="ValidateRequiredFile" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">MOA / Trust Deed</label>
-                    <asp:FileUpload ID="fuMOA" runat="server"
-                        CssClass="form-control" />
+                    <label>MOA / Trust Deed <span class="required-star">*</span></label>
+                    <asp:FileUpload ID="fuMOA" runat="server" CssClass="form-control" />
+                    <asp:CustomValidator ID="cvMOA" runat="server"
+                        ErrorMessage="MOA / Trust Deed is required."
+                        CssClass="field-error" Display="Dynamic"
+                        ValidationGroup="BasicDetails"
+                        OnServerValidate="ValidateRequiredFile" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label class="mb-1">PAN Card</label>
-                    <asp:FileUpload ID="fuPAN" runat="server"
-                        CssClass="form-control" />
+                    <label>PAN Card <span class="required-star">*</span></label>
+                    <asp:FileUpload ID="fuPAN" runat="server" CssClass="form-control" />
+                    <asp:CustomValidator ID="cvPAN" runat="server"
+                        ErrorMessage="PAN card is required."
+                        CssClass="field-error" Display="Dynamic"
+                        ValidationGroup="BasicDetails"
+                        OnServerValidate="ValidateRequiredFile" />
                 </div>
 
             </div>
         </div>
     </div>
+
+    <asp:ValidationSummary ID="vsBasicDetails" runat="server"
+        ValidationGroup="BasicDetails" CssClass="text-danger mb-3" />
 
     <asp:Label ID="lblMsg" runat="server" />
-    <asp:Button ID="btn_save" runat="server" OnClick="btnSave_Click" Text="Save" />
+
+    <div class="mb-4">
+        <asp:Button ID="btn_save" runat="server"
+            Text="Save" CssClass="btn btn-primary"
+            ValidationGroup="BasicDetails"
+            OnClick="btnSave_Click" />
+    </div>
+
+    <asp:SqlDataSource
+        ID="DS_States"
+        runat="server"
+        ConnectionString="<%$ ConnectionStrings:ApplicationServices %>"
+        SelectCommand="Select * From Loc_States Where IsActive = 1" SelectCommandType="Text"></asp:SqlDataSource>
+
 
 </asp:Content>
 
