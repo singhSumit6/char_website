@@ -34,7 +34,7 @@ public partial class MasterCHAR : System.Web.UI.MasterPage
     {
         // Reset all steps
         step1.Attributes["class"] = "step-circle";
-        step2.Attributes["class"] = "step-circle";
+        //step2.Attributes["class"] = "step-circle";
         step3.Attributes["class"] = "step-circle";
         step4.Attributes["class"] = "step-circle";
         step5.Attributes["class"] = "step-circle";
@@ -49,32 +49,32 @@ public partial class MasterCHAR : System.Web.UI.MasterPage
 
             case 2:
                 step1.Attributes["class"] += " completed-step";
-                step2.Attributes["class"] += " active-step";
+              //  step2.Attributes["class"] += " active-step";
                 break;
 
             case 3:
                 step1.Attributes["class"] += " completed-step";
-                step2.Attributes["class"] += " completed-step";
+             //   step2.Attributes["class"] += " completed-step";
                 step3.Attributes["class"] += " active-step";
                 break;
 
             case 4:
                 step1.Attributes["class"] += " completed-step";
-                step2.Attributes["class"] += " completed-step";
+              //  step2.Attributes["class"] += " completed-step";
                 step3.Attributes["class"] += " completed-step";
                 step4.Attributes["class"] += " active-step";
                 break;
 
             case 5:
                 step1.Attributes["class"] += " completed-step";
-                step2.Attributes["class"] += " completed-step";
+              //  step2.Attributes["class"] += " completed-step";
                 step3.Attributes["class"] += " completed-step";
                 step4.Attributes["class"] += " completed-step";
                 step5.Attributes["class"] += " active-step";
                 break;
             case 6:
                 step1.Attributes["class"] += " completed-step";
-                step2.Attributes["class"] += " completed-step";
+               // step2.Attributes["class"] += " completed-step";
                 step3.Attributes["class"] += " completed-step";
                 step4.Attributes["class"] += " completed-step";
                 step5.Attributes["class"] += " completed-step";

@@ -87,10 +87,10 @@
                                     <div><a href="IA_Basics.aspx">Basic Details</a></div>
                                 </div>
 
-                                <div class="col step">
+                            <%--    <div class="col step">
                                     <div id="step2" runat="server" class="step-circle">2</div>
                                     <div><a href="IA_Members.aspx">Members</a></div>
-                                </div>
+                                </div>--%>
 
                                 <div class="col step">
                                     <div id="step3" runat="server" class="step-circle">3</div>
