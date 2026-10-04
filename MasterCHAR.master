@@ -93,23 +93,29 @@
                                 </div>--%>
 
                                 <div class="col step">
-                                    <div id="step3" runat="server" class="step-circle">3</div>
+                                    <div id="step3" runat="server" class="step-circle">2</div>
                                     <div><a href="AI_Financial.aspx">Financial</a></div>
                                 </div>
 
                                 <div class="col step">
-                                    <div id="step4" runat="server" class="step-circle">4</div>
+                                    <div id="step4" runat="server" class="step-circle">3</div>
                                     <div><a href="IA_Experience.aspx">Experience</a></div>
                                 </div>
 
                                 <div class="col step">
-                                    <div id="step5" runat="server" class="step-circle">5</div>
+                                    <div id="step5" runat="server" class="step-circle">4</div>
                                     <div><a href="IA_ProposedLocation.aspx">Proposed Location</a></div>
                                 </div>
 
                                 <div class="col step">
-                                    <div id="step6" runat="server" class="step-circle">6</div>
+                                    <div id="step6" runat="server" class="step-circle">5</div>
                                     <div><a href="IA_Review.aspx">Review</a></div>
+                                </div>
+
+
+                                <div class="col step">
+                                    <div id="step7" runat="server" class="step-circle">6</div>
+                                    <div><a href="Ngo_FinalSubmittion.aspx">Payment & Project Submission</a></div>
                                 </div>
 
                             </div>

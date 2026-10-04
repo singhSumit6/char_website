@@ -39,6 +39,7 @@ public partial class MasterCHAR : System.Web.UI.MasterPage
         step4.Attributes["class"] = "step-circle";
         step5.Attributes["class"] = "step-circle";
         step6.Attributes["class"] = "step-circle";
+        step7.Attributes["class"] = "step-circle";
 
         // Apply status
         switch (stepNumber)
@@ -79,6 +80,16 @@ public partial class MasterCHAR : System.Web.UI.MasterPage
                 step4.Attributes["class"] += " completed-step";
                 step5.Attributes["class"] += " completed-step";
                 step6.Attributes["class"] += " active-step";
+                break;
+
+            case 7:
+                step1.Attributes["class"] += " completed-step";
+                // step2.Attributes["class"] += " completed-step";
+                step3.Attributes["class"] += " completed-step";
+                step4.Attributes["class"] += " completed-step";
+                step5.Attributes["class"] += " completed-step";
+                step6.Attributes["class"] += " completed-step";
+                step7.Attributes["class"] += " active-step";
                 break;
         }
     }

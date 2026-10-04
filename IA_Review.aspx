@@ -186,7 +186,7 @@
 
     <!-- ================= MEMBERS ================= -->
 
-    <div class="card mb-4">
+    <div class="card mb-4" style="display:none">
 
         <div class="card-header bg-info text-white fw-bold">
             Members
@@ -284,9 +284,47 @@
 
     </div>
 
+    <div class="card mb-4">
+
+        <div class="card-header bg-info bg-gradient fw-bold">
+            Proposed Locations
+        </div>
+
+
+        <asp:GridView ID="gvLocation"
+            runat="server"
+            CssClass="table table-bordered table-striped"
+            AutoGenerateColumns="false"
+            EmptyDataText="No proposed locations added yet.">
+
+            <Columns>
+                <asp:TemplateField HeaderText="No.">
+                    <ItemTemplate>
+                        <%# Container.DataItemIndex + 1 %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                <asp:BoundField DataField="State" HeaderText="State" />
+                <asp:BoundField DataField="District" HeaderText="District" />
+                <asp:BoundField DataField="Tehsil" HeaderText="Tehsil" />
+                <asp:BoundField DataField="Block" HeaderText="Block" />
+                <asp:BoundField DataField="PIN_Code" HeaderText="PIN" />
+            </Columns>
+        </asp:GridView>
+    </div>
+
+
+    <div style="display:flex; justify-content:center; ">
+        <asp:Button runat="server" ID="btnNext" CssClass="btn btn-primary" Text="Nex" OnClick="btnNext_Click" />
+    </div>
+    
+
 </div>
 
 <% } %>
+
+
+       
 
 </div>
 </asp:Content>

@@ -38,6 +38,8 @@ public partial class IA_Experience : System.Web.UI.Page
         {
             //lblMsg.Text = ex.Message;
             //lblMsg.CssClass = "text-danger";
+
+            showToast(ex.Message, false);
         }
     }
     protected void btnSaveProject_Click(object sender, EventArgs e)
@@ -96,6 +98,8 @@ public partial class IA_Experience : System.Web.UI.Page
                     //lblMsg.Text = dt.Rows[0]["Message"].ToString();
                     //lblMsg.CssClass = "text-success";
 
+                    showToast(dt.Rows[0]["Message"].ToString(), true);
+
                     Response.Write(dt.Rows[0]["Message"].ToString());
 
                     ClearProjectForm();
@@ -118,8 +122,7 @@ public partial class IA_Experience : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            //lblMsg.Text = ex.Message;
-            //lblMsg.CssClass = "text-danger";
+            showToast(ex.Message, true);
             Response.Write(ex.Message);
         }
     }
@@ -154,16 +157,58 @@ public partial class IA_Experience : System.Web.UI.Page
                 ddlStatus.SelectedValue = dr["ProjectStatus"].ToString();
 
                 ScriptManager.RegisterStartupScript(
-                    this, GetType(),
-                    "showModal",
-                    "showProjectModal();",
-                    true);
+                Page,
+                Page.GetType(),
+                "showModal",
+                "window.onload = function() { showProjectModal(); };",
+                true
+            );
             }
         }
         catch (Exception ex)
         {
-            //lblMsg.Text = ex.Message;
-            //lblMsg.CssClass = "text-danger";
+            showToast(ex.Message, false);
+        }
+    }
+
+
+    protected void btnDelete_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            LinkButton btn = (LinkButton)sender;
+            int projectId = Convert.ToInt32(btn.CommandArgument);
+
+            Dictionary<string, object> prms =
+                new Dictionary<string, object>();
+
+            prms.Add("@ProjectID", projectId);
+            prms.Add("@Reg_Id", reg_id);
+
+            DataTable dt = DatabaseHelper.GET_DataTable(
+                "usp_Delete_IA_Project", prms);
+
+            if (dt.Rows.Count > 0 &&
+                Convert.ToInt32(dt.Rows[0]["Status"]) == 1)
+            {
+                LoadProjects();
+
+                ClearProjectForm();
+
+                showToast("Project deleted successfully.", true);
+            }
+            else
+            {
+                string message = dt.Rows.Count > 0
+                    ? Convert.ToString(dt.Rows[0]["Message"])
+                    : "Unable to delete project.";
+
+                showToast(message, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            showToast(ex.Message, false);
         }
     }
 
@@ -178,5 +223,32 @@ public partial class IA_Experience : System.Web.UI.Page
         txtArea.Text = "";
         txtAmount.Text = "";
         ddlStatus.SelectedIndex = 0;
+    }
+
+
+    private void showToast(string message, bool success)
+    {
+        lblMsg.Text = message;
+
+        if (success)
+        {
+            lblMsg.CssClass = "bg-success text-white d-block m-3 p-3 rounded fw-bold";
+        }
+        else
+        {
+            lblMsg.CssClass = "bg-danger text-white d-block m-3 p-3 rounded fw-bold";
+        }
+    }
+
+    protected void btnNext_Click(object sender, EventArgs e)
+    {
+        if (gvProject.Rows.Count > 0)
+        {
+            Response.Redirect("IA_ProposedLocation.aspx");
+        }
+        else
+        {
+            showToast("Please add at least one project experince.", false);
+        }
     }
 }

@@ -303,6 +303,7 @@ Alter PROCEDURE [dbo].[usp_Upsert_IA_BasicDetail]
   
     @OrgMobile          VARCHAR(15),  
     @OrgEmail           VARCHAR(150),  
+    @Website            VARCHAR(150) = NULL,
   
     @AuthName           VARCHAR(150),  
     @AuthDesig          VARCHAR(100),  
@@ -425,7 +426,7 @@ BEGIN
         /* ================= UPDATE REGISTRATION ================= */  
   
         UPDATE CAHR_Registration  
-    SET  
+        SET  
             -- Registered Address  
             Address  = ISNULL(NULLIF(@RegAddress,''), Address),  
             State    = ISNULL(NULLIF(@RegState,''), State),  
@@ -435,6 +436,7 @@ BEGIN
             -- Contact  
             Phone = ISNULL(NULLIF(@OrgMobile,''), Phone),  
             Email = ISNULL(NULLIF(@OrgEmail,''), Email),  
+            Website = ISNULL(NULLIF(@Website,''), @Website),
   
             -- Authorized Person  
             AuthName   = ISNULL(NULLIF(@AuthName,''), AuthName),  
@@ -465,4 +467,225 @@ BEGIN
             0 AS Id;  
   
     END CATCH  
+END  
+GO
+
+
+ALTER PROCEDURE dbo.usp_Upsert_IA_Financial
+    @FinancialID INT,
+    @Reg_Id INT,
+    @FinancialYear NVARCHAR(20),
+    @Turnover NVARCHAR(50),
+    @NetWorth NVARCHAR(50),
+    @ITR NVARCHAR(100),
+    @FinReport NVARCHAR(100),
+    @ITRFile NVARCHAR(500),
+    @FinStatementFile NVARCHAR(500)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @FinancialID = 0
+    BEGIN
+        INSERT INTO dbo.CAHR_Financial
+        (
+            Reg_Id, FinancialYear, Turnover, NetWorth,
+            ITR, FinReport, ITRFile, FinStatementFile
+        )
+        VALUES
+        (
+            @Reg_Id, @FinancialYear, @Turnover, @NetWorth,
+            @ITR, @FinReport, @ITRFile, @FinStatementFile
+        );
+    END
+    ELSE
+    BEGIN
+        UPDATE dbo.CAHR_Financial
+        SET
+            FinancialYear = @FinancialYear,
+            Turnover = @Turnover,
+            NetWorth = @NetWorth,
+            ITR = @ITR,
+            FinReport = @FinReport,
+            ITRFile = CASE
+                        WHEN NULLIF(@ITRFile, '') IS NULL
+                        THEN ITRFile ELSE @ITRFile
+                      END,
+            FinStatementFile = CASE
+                        WHEN NULLIF(@FinStatementFile, '') IS NULL
+                        THEN FinStatementFile ELSE @FinStatementFile
+                      END
+        WHERE FinancialID = @FinancialID
+          AND Reg_Id = @Reg_Id;
+
+        IF @@ROWCOUNT = 0
+        BEGIN
+            SELECT 0 AS Status, 'Record not found.' AS Message;
+            RETURN;
+        END
+    END
+
+    SELECT 1 AS Status, 'Financial details saved successfully.' AS Message;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[usp_Get_IA_Financial]  
+(  
+    @Reg_Id      INT = NULL,   -- RegistrationID  
+    @FinancialID INT = NULL  
+)  
+AS  
+BEGIN  
+    SET NOCOUNT ON;  
+  
+    SELECT *  
+    FROM CAHR_Financial  
+    WHERE  
+        (@Reg_Id IS NULL OR Reg_Id = @Reg_Id)  
+    AND  
+        (@FinancialID IS NULL OR FinancialID = @FinancialID);  
+END  
+go
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Delete_IA_Financial
+    @FinancialID INT,
+    @Reg_Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.CAHR_Financial
+    WHERE FinancialID = @FinancialID
+      AND Reg_Id = @Reg_Id;
+
+    IF @@ROWCOUNT > 0
+        SELECT 1 AS Status, 'Record deleted successfully.' AS Message;
+    ELSE
+        SELECT 0 AS Status, 'Record not found.' AS Message;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Delete_IA_Project
+    @ProjectID INT,
+    @Reg_Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.CAHR_ProjectExperience
+    WHERE ProjectID = @ProjectID
+      AND Reg_Id = @Reg_Id;
+
+    IF @@ROWCOUNT > 0
+        SELECT 1 AS Status, 'Project deleted successfully.' AS Message;
+    ELSE
+        SELECT 0 AS Status, 'Project not found.' AS Message;
+END;
+GO
+
+
+
+
+ALTER PROCEDURE dbo.usp_Upsert_IA_ProposedLocation
+    @LocationID INT = 0,
+    @Reg_Id INT,
+    @Block VARCHAR(100),
+    @Tehsil VARCHAR(100),
+    @State VARCHAR(100),
+    @District VARCHAR(100),
+    @PIN_Code VARCHAR(10)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        IF @LocationID = 0
+        BEGIN
+            IF (
+                SELECT COUNT(*)
+                FROM dbo.CAHR_ProposedLocation
+                WHERE Reg_Id = @Reg_Id
+            ) >= 5
+            BEGIN
+                SELECT 0 AS Status,
+                       'Maximum 5 locations allowed.' AS Message;
+                RETURN;
+            END;
+
+            INSERT INTO dbo.CAHR_ProposedLocation
+                (Reg_Id, Block, Tehsil, State, District, PIN_Code)
+            VALUES
+                (@Reg_Id, @Block, @Tehsil, @State, @District, @PIN_Code);
+        END
+        ELSE
+        BEGIN
+            UPDATE dbo.CAHR_ProposedLocation
+            SET Block = @Block,
+                Tehsil = @Tehsil,
+                State = @State,
+                District = @District,
+                PIN_Code = @PIN_Code
+            WHERE LocationID = @LocationID
+              AND Reg_Id = @Reg_Id;
+
+            IF @@ROWCOUNT = 0
+            BEGIN
+                SELECT 0 AS Status, 'Location not found.' AS Message;
+                RETURN;
+            END;
+        END;
+
+        SELECT 1 AS Status, 'Location saved successfully.' AS Message;
+    END TRY
+    BEGIN CATCH
+        SELECT 0 AS Status, ERROR_MESSAGE() AS Message;
+    END CATCH;
+END;
+go
+
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Delete_IA_ProposedLocation
+    @LocationID INT,
+    @Reg_Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.CAHR_ProposedLocation
+    WHERE LocationID = @LocationID
+      AND Reg_Id = @Reg_Id;
+
+    IF @@ROWCOUNT > 0
+        SELECT 1 AS Status, 'Location deleted successfully.' AS Message;
+    ELSE
+        SELECT 0 AS Status, 'Location not found.' AS Message;
+END;
+GO
+
+
+Alter PROCEDURE [dbo].[usp_Get_IA_ProposedLocation]  
+(  
+    @Reg_Id INT  
+)  
+AS  
+BEGIN  
+  
+    SELECT  
+        LocationID,  
+        LocationName,  
+        FullAddress,  
+        Block,  
+        Tehsil,  
+        Loc_States.State_Name as State,
+        Loc_States.State_Id as StateId,
+        District,  
+        PIN_Code  
+    FROM CAHR_ProposedLocation  
+    Inner Join Loc_States On CAHR_ProposedLocation.State = Loc_States.State_Id
+    WHERE Reg_Id=@Reg_Id  
+    ORDER BY LocationID;  
+  
 END  

@@ -127,14 +127,7 @@
                         CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
                 </div>
 
-                <div class="col-md-3 mb-3">
-                    <label>Tehsil <span class="required-star">*</span></label>
-                    <asp:TextBox ID="txtRegTehsil" runat="server" CssClass="form-control" />
-                    <asp:RequiredFieldValidator ID="rfvRegTehsil" runat="server"
-                        ControlToValidate="txtRegTehsil" ErrorMessage="Tehsil is required."
-                        CssClass="field-error" Display="Dynamic" ValidationGroup="BasicDetails" />
-                </div>
-
+               
                 <div class="col-md-3 mb-3">
                     <label>PIN <span class="required-star">*</span></label>
                     <asp:TextBox ID="txtRegPIN" runat="server" CssClass="form-control" MaxLength="6" />
@@ -155,9 +148,11 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light d-flex justify-content-between">
             <h5 class="mb-0 text-primary">Communication Address</h5>
+            <div>
             <asp:CheckBox ID="chkSameAddress" runat="server"
                 Text=" Same as Registered" AutoPostBack="true"
                 OnCheckedChanged="chkSameAddress_CheckedChanged" />
+            </div>
         </div>
         <div class="card-body">
             <div class="row">
@@ -316,11 +311,13 @@
                 <div class="col-md-4 mb-3">
                     <label>Registration Certificate <span class="required-star">*</span></label>
                     <asp:FileUpload ID="fuRC" runat="server" CssClass="form-control" />
-                    <asp:CustomValidator ID="cvRC" runat="server"
-                        ErrorMessage="Registration certificate is required."
-                        CssClass="field-error" Display="Dynamic"
-                        ValidationGroup="BasicDetails"
-                        OnServerValidate="ValidateRequiredFile" />
+                   <asp:CustomValidator ID="cvRC" runat="server"
+    ErrorMessage="Registration certificate is required."
+    CssClass="field-error"
+    Display="Dynamic"
+    ValidationGroup="BasicDetails"
+    ValidateEmptyText="true"
+    OnServerValidate="ValidateRequiredFile" />
                 </div>
 
                 <div class="col-md-4 mb-3">
@@ -352,11 +349,23 @@
 
     <asp:Label ID="lblMsg" runat="server" />
 
-    <div class="mb-4">
-        <asp:Button ID="btn_save" runat="server"
-            Text="Save" CssClass="btn btn-primary"
-            ValidationGroup="BasicDetails"
-            OnClick="btnSave_Click" />
+    <div class="row mb-2">
+        <div class="col-md-1">
+            <asp:Button ID="btn_save" runat="server"
+                Text="Save" CssClass="btn btn-primary"
+                ValidationGroup="BasicDetails"
+                OnClick="btnSave_Click" />
+        </div>
+
+        <div class="col-md-10"></div>
+
+
+        <div class="col-md-1">
+            <asp:Button ID="Button1" runat="server"
+                Text="Next" CssClass="btn btn-success"
+                ValidationGroup="BasicDetails"
+                OnClick="btnNext_Click" />
+        </div>
     </div>
 
     <asp:SqlDataSource

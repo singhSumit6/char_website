@@ -11,9 +11,16 @@ public partial class IA_Basics : System.Web.UI.Page
 {
     private int reg_id;
 
+    private string existingRCFile = "";
+    private string existingMOAFile = "";
+    private string existingPANFile = "";
+
     protected void Page_Load(object sender, EventArgs e)
     {
         reg_id = ((MasterCHAR)this.Master).Get_RegId();
+
+        // Load saved file paths on every request for validation.
+        LoadExistingFilePaths(reg_id);
 
         if (!IsPostBack)
         {
@@ -30,6 +37,38 @@ public partial class IA_Basics : System.Web.UI.Page
     // LOAD EXISTING RECORD
     // =====================================================
 
+    private void LoadExistingFilePaths(int regId)
+    {
+        existingRCFile = "";
+        existingMOAFile = "";
+        existingPANFile = "";
+
+        Dictionary<string, object> prms =
+            new Dictionary<string, object>();
+
+        prms.Add("@Reg_Id", regId);
+
+        DataTable dt = DatabaseHelper.GET_DataTable(
+            "usp_Get_IA_BasicDetails", prms);
+
+        if (dt == null || dt.Rows.Count == 0)
+            return;
+
+        DataRow dr = dt.Rows[0];
+
+        existingRCFile = dr["RC_File"] == DBNull.Value
+            ? ""
+            : Convert.ToString(dr["RC_File"]);
+
+        existingMOAFile = dr["MOA_File"] == DBNull.Value
+            ? ""
+            : Convert.ToString(dr["MOA_File"]);
+
+        existingPANFile = dr["PAN_File"] == DBNull.Value
+            ? ""
+            : Convert.ToString(dr["PAN_File"]);
+    }
+
     private void GetExistingRecord(int regId)
     {
         Dictionary<string, object> prms =
@@ -44,6 +83,10 @@ public partial class IA_Basics : System.Web.UI.Page
             return;
 
         DataRow dr = dt.Rows[0];
+
+
+        // If already saved, move to the next step 
+        
 
         hfBasicId.Value = dr["Id"].ToString();
 
@@ -92,6 +135,19 @@ public partial class IA_Basics : System.Web.UI.Page
         txtAuthDesig.Text = dr["AuthDesig"].ToString();
         txtAuthMobile.Text = dr["AuthMobile"].ToString();
         txtAuthEmail.Text = dr["AuthEmail"].ToString();
+
+        // Files 
+        existingRCFile = dr["RC_File"] == DBNull.Value
+                        ? ""
+                        : dr["RC_File"].ToString();
+
+        existingMOAFile = dr["MOA_File"] == DBNull.Value
+            ? ""
+            : dr["MOA_File"].ToString();
+
+        existingPANFile = dr["PAN_File"] == DBNull.Value
+            ? ""
+            : dr["PAN_File"].ToString();
     }
 
     private void SelectDropDown(DropDownList ddl, string value)
@@ -210,21 +266,35 @@ public partial class IA_Basics : System.Web.UI.Page
     // =====================================================
 
     protected void ValidateRequiredFile(
-        object source, ServerValidateEventArgs args)
+     object source,
+     ServerValidateEventArgs args)
     {
         CustomValidator validator = (CustomValidator)source;
 
-        FileUpload upload = null;
+        switch (validator.ID)
+        {
+            case "cvRC":
+                args.IsValid =
+                    fuRC.HasFile ||
+                    !string.IsNullOrWhiteSpace(existingRCFile);
+                break;
 
-        if (validator.ID == "cvRC")
-            upload = fuRC;
-        else if (validator.ID == "cvMOA")
-            upload = fuMOA;
-        else if (validator.ID == "cvPAN")
-            upload = fuPAN;
+            case "cvMOA":
+                args.IsValid =
+                    fuMOA.HasFile ||
+                    !string.IsNullOrWhiteSpace(existingMOAFile);
+                break;
 
-        // A new upload is required by this implementation.
-        args.IsValid = upload != null && upload.HasFile;
+            case "cvPAN":
+                args.IsValid =
+                    fuPAN.HasFile ||
+                    !string.IsNullOrWhiteSpace(existingPANFile);
+                break;
+
+            default:
+                args.IsValid = false;
+                break;
+        }
     }
 
     private string SaveFile(FileUpload fu)
@@ -303,19 +373,31 @@ public partial class IA_Basics : System.Web.UI.Page
             // Contact details
             prms.Add("@OrgMobile", txtOrgMobile.Text.Trim());
             prms.Add("@OrgEmail", txtOrgEmail.Text.Trim());
+            prms.Add("@Website", txtWebsite.Text.Trim());
 
             // Authorized signatory
             prms.Add("@AuthName", txtAuthName.Text.Trim());
             prms.Add("@AuthDesig", txtAuthDesig.Text.Trim());
             prms.Add("@AuthMobile", txtAuthMobile.Text.Trim());
             prms.Add("@AuthEmail", txtAuthEmail.Text.Trim());
-     
+
             //prms.Add("@RegTehsil", txtRegTehsil.Text.Trim());
+            string rcFile = fuRC.HasFile
+                    ? SaveFile(fuRC)
+                    : existingRCFile;
+
+            string moaFile = fuMOA.HasFile
+                ? SaveFile(fuMOA)
+                : existingMOAFile;
+
+            string panFile = fuPAN.HasFile
+                ? SaveFile(fuPAN)
+                : existingPANFile;
 
             // Save uploaded documents
-            prms.Add("@RC_File", SaveFile(fuRC));
-            prms.Add("@MOA_File", SaveFile(fuMOA));
-            prms.Add("@PAN_File", SaveFile(fuPAN));
+            prms.Add("@RC_File", rcFile);
+            prms.Add("@MOA_File", moaFile);
+            prms.Add("@PAN_File", panFile);
 
             DataTable dt = DatabaseHelper.GET_DataTable(
                 "usp_Upsert_IA_BasicDetail", prms);
@@ -325,24 +407,19 @@ public partial class IA_Basics : System.Web.UI.Page
                 int status = Convert.ToInt32(dt.Rows[0]["Status"]);
                 string message = Convert.ToString(dt.Rows[0]["Message"]);
 
-                lblMsg.Text = Server.HtmlEncode(message);
-                lblMsg.CssClass =
-                    status == 1 ? "text-success" : "text-danger";
+                showToast(Server.HtmlEncode(message), status == 1);
 
                 if (status == 1)
                     GetExistingRecord(reg_id);
             }
             else
             {
-                lblMsg.Text = "No response received from database.";
-                lblMsg.CssClass = "text-danger";
+                showToast("No response received from database.", false);
             }
         }
         catch (Exception)
         {
-            // Log the actual exception securely on the server.
-            lblMsg.Text = "Unable to save details. Please check your data and try again.";
-            lblMsg.CssClass = "text-danger";
+            showToast("Unable to save details. Please check your data and try again.", false);
         }
     }
 
@@ -353,6 +430,21 @@ public partial class IA_Basics : System.Web.UI.Page
         if (!Page.IsValid)
             return;
 
-        // Add next-step navigation here if required.
+        Response.Redirect("AI_Financial.aspx");
+    }
+
+
+    private void showToast(string message, bool success)
+    {
+        lblMsg.Text = message;
+
+        if (success)
+        {
+            lblMsg.CssClass = "bg-success text-white d-block m-3 p-3 rounded fw-bold";
+        }
+        else
+        {
+            lblMsg.CssClass = "bg-danger text-white d-block m-3 p-3 rounded fw-bold";
+        }
     }
 }

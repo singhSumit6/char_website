@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Activities;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -30,6 +31,7 @@ public partial class IA_Review : System.Web.UI.Page
             ((MasterCHAR)this.Master).SetActiveStep(6);
 
             LoadReviewData();
+            LoadLocation();
         }
     }
     private void LoadReviewData()
@@ -187,5 +189,27 @@ public partial class IA_Review : System.Web.UI.Page
 
 
         PreviewData = model;
+    }
+
+    private void LoadLocation()
+    {
+        Dictionary<string, object> prms =
+            new Dictionary<string, object>();
+
+        prms.Add("@Reg_Id", reg_id);
+
+        DataTable dt =
+          DatabaseHelper.GET_DataTable("usp_Get_IA_ProposedLocation", prms);
+
+        gvLocation.DataSource = dt;
+        gvLocation.DataBind();
+    }
+
+    protected void btnNext_Click(object sender, EventArgs e)
+    {
+        if(PreviewData != null)
+        {
+            Response.Redirect("Ngo_FinalSubmittion.aspx");
+        }
     }
 }
