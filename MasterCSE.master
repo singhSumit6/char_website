@@ -1,0 +1,135 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="MasterCSE.master.cs" Inherits="MasterCSE" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+     <style>
+     .step {
+         text-align: center;
+         font-size: 14px;
+     }
+
+     .step-circle {
+         width: 35px;
+         height: 35px;
+         line-height: 35px;
+         border-radius: 50%;
+         display: inline-block;
+         background: #dee2e6;
+         color: #000;
+     }
+
+     .active-step {
+         background: #0d6efd !important;
+         color: #fff !important;
+     }
+
+     .completed-step {
+         background: #198754 !important;
+         color: #fff !important;
+     }
+ </style>
+ <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+
+     <div class=" bg-body-secondary" style="padding: 150px 0 60px;">
+     <div class="container mt-4">
+
+         <div class="row">
+             <div class="col-sm-4">
+
+                 <div class="card mb-4 shadow-sm">
+
+                     <div class="card-header bg-primary text-white text-center">
+                         <h6 class="mb-0">Organization Profile</h6>
+                     </div>
+
+                     <div class="card-body">
+
+                         <p>
+                             <strong>Name:</strong> <%=client_info.OrgName %>
+                         </p>
+
+                         <p>
+                             <strong>Reg. Type:</strong>  <%=client_info.OrgType %>
+                         </p>
+
+                         <p>
+                             <strong>Email:</strong> <%=client_info.OrgEmail %>
+                         </p>
+
+                         <p>
+                             <strong>Mobile:</strong> <%=client_info.OrgMobile %>
+                         </p>
+
+                         <p>
+                             <strong>Status:</strong>  <%=client_info.RegState %>
+                         </p>
+
+                         <hr />
+
+                         <p class="small text-muted text-center">
+                             Registration ID:  <%=client_info.Reg_Code %>
+                         </p>
+
+                     </div>
+
+                 </div>
+
+
+             </div>
+             <div class="col-sm-8">
+                 <div class="card-body">
+                     <div class="card mb-4 p-3 shadow-sm">
+                         <div class="row text-center">
+
+                             <div class="col step">
+                                 <div id="step1" runat="server" class="step-circle">1</div>
+                                 <div><a href="Basic_CSE.aspx">Basic Details</a></div>
+                             </div>
+
+                         <%--    <div class="col step">
+                                 <div id="step2" runat="server" class="step-circle">2</div>
+                                 <div><a href="IA_Members.aspx">Members</a></div>
+                             </div>--%>
+
+                            <%-- <div class="col step">
+                                 <div id="step3" runat="server" class="step-circle">2</div>
+                                 <div><a href="AI_Financial.aspx">Financial</a></div>
+                             </div>
+
+                             <div class="col step">
+                                 <div id="step4" runat="server" class="step-circle">3</div>
+                                 <div><a href="IA_Experience.aspx">Experience</a></div>
+                             </div>--%>
+
+                             <div class="col step">
+                                 <div id="step5" runat="server" class="step-circle">2</div>
+                                 <div><a href="Location_CSE.aspx">Proposed Location</a></div>
+                             </div>
+
+                             <div class="col step">
+                                 <div id="step6" runat="server" class="step-circle">5</div>
+                                 <div><a href="IA_Review.aspx">Review</a></div>
+                             </div>
+
+
+                             <div class="col step">
+                                 <div id="step7" runat="server" class="step-circle">6</div>
+                                 <div><a href="Ngo_FinalSubmittion.aspx">Payment & Project Submission</a></div>
+                             </div>
+
+                         </div>
+                     </div>
+                 </div>
+                 <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+             </div>
+         </div>
+         <!-- Progress Bar -->
+
+         <!-- Page Content -->
+
+     </div>
+ </div>
+</asp:Content>
+

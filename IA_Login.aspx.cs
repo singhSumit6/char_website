@@ -36,8 +36,17 @@ public partial class IA_Login : System.Web.UI.Page
                 // Add Cookie
                 Response.Cookies.Add(cookie);
 
-                // Redirect
-                Response.Redirect("IA_Basics.aspx");
+                var regType = dr["RegistrationType"].ToString();
+
+                if (regType.ToLower() == "ngo")
+                {
+                    // Redirect
+                    Response.Redirect("IA_Basics.aspx");
+                }
+                else
+                {
+                    Response.Redirect("Basic_CSE.aspx");
+                }
             }
             else
             {

