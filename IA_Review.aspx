@@ -291,26 +291,27 @@
         </div>
 
 
-        <asp:GridView ID="gvLocation"
-            runat="server"
-            CssClass="table table-bordered table-striped"
-            AutoGenerateColumns="false"
-            EmptyDataText="No proposed locations added yet.">
+         <asp:GridView ID="gvLocation"
+     runat="server"
+     CssClass="table table-bordered table-striped"
+     AutoGenerateColumns="false"
+     EmptyDataText="No proposed locations added yet.">
 
-            <Columns>
-                <asp:TemplateField HeaderText="No.">
-                    <ItemTemplate>
-                        <%# Container.DataItemIndex + 1 %>
-                    </ItemTemplate>
-                </asp:TemplateField>
+     <Columns>
+         <asp:TemplateField HeaderText="No.">
+             <ItemTemplate>
+                 <%# Container.DataItemIndex + 1 %>
+             </ItemTemplate>
+         </asp:TemplateField>
 
-                <asp:BoundField DataField="State" HeaderText="State" />
-                <asp:BoundField DataField="District" HeaderText="District" />
-                <asp:BoundField DataField="Tehsil" HeaderText="Tehsil" />
-                <asp:BoundField DataField="Block" HeaderText="Block" />
-                <asp:BoundField DataField="PIN_Code" HeaderText="PIN" />
-            </Columns>
-        </asp:GridView>
+         <asp:BoundField DataField="State" HeaderText="State" />
+         <asp:BoundField DataField="District" HeaderText="District" />
+         <asp:BoundField DataField="Tehsil" HeaderText="Tehsil" />
+         <asp:BoundField DataField="Block" HeaderText="Block" />
+         <asp:BoundField DataField="PIN_Code" HeaderText="PIN" />
+
+     </Columns>
+ </asp:GridView>
     </div>
 
 

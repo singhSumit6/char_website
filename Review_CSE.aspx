@@ -1,0 +1,195 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterCSE.master" AutoEventWireup="true" CodeFile="Review_CSE.aspx.cs" Inherits="Review_CSE" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
+       <div id="printArea">
+
+<% if (PreviewData != null) { %>
+
+<div class="container bg-white p-4 shadow rounded">
+
+    <!-- HEADER -->
+    <div class="text-center mb-4 border-bottom pb-3">
+
+        <h3 class="text-primary fw-bold">
+            CAHR Application Review
+        </h3>
+
+        <span class="badge bg-success fs-6">
+            Reg Code :
+            <%= PreviewData.Registration.Reg_Code %>
+        </span>
+
+    </div>
+
+
+    <!-- ================= ORGANIZATION ================= -->
+
+    <div class="card mb-4">
+
+        <div class="card-header bg-primary text-white fw-bold">
+            Organization Information
+        </div>
+
+        <table class="table table-bordered mb-0">
+
+            <tr>
+                <th>Name</th>
+                <td><%= PreviewData.Registration.OrgName %></td>
+
+                <th>PAN</th>
+                <td><%= PreviewData.Registration.PAN %></td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td><%= PreviewData.Registration.Phone %></td>
+
+                <th>Email</th>
+                <td><%= PreviewData.Registration.Email %></td>
+            </tr>
+
+            <tr>
+                <th>Website</th>
+                <td><%= PreviewData.Registration.Website %></td>
+
+                <th>Status</th>
+                <td>
+                    <span class="badge bg-info">
+                        <%= PreviewData.Registration.Reg_Status %>
+                    </span>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+
+
+   
+
+
+    <!-- ================= REGISTERED ADDRESS ================= -->
+
+
+    <!-- ================= BASIC DETAILS ================= -->
+
+    <div class="card mb-4">
+
+        <div class="card-header bg-secondary text-white fw-bold">
+            Registration & Legal Details
+        </div>
+
+        <table class="table table-bordered mb-0">
+
+            <tr>
+                <th>Org Type</th>
+                <td><%= PreviewData.BasicDetail.OrgType %></td>
+
+                <th>Act</th>
+                <td><%= PreviewData.BasicDetail.ActRegistered %></td>
+            </tr>
+
+            <tr>
+                <th>Reg. No</th>
+                <td><%= PreviewData.BasicDetail.RegistrationNumber %></td>
+
+                <th>Reg. Date</th>
+                <td><%= PreviewData.BasicDetail.RegistrationDate %></td>
+            </tr>
+
+            <tr>
+                <th>TAN</th>
+                <td colspan="3"><%= PreviewData.BasicDetail.TAN %></td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- ================= COMMUNICATION ADDRESS ================= -->
+
+    <div class="card mb-4">
+
+        <div class="card-header bg-secondary text-white fw-bold">
+            Communication Address
+        </div>
+
+        <table class="table table-bordered mb-0">
+
+            <tr>
+                <th>Address</th>
+                <td colspan="3">
+                    <%= PreviewData.BasicDetail.CommAddress %>,
+                    <%= PreviewData.BasicDetail.CommDistrict %>,
+                    <%= PreviewData.BasicDetail.CommState %>
+                    - <%= PreviewData.BasicDetail.CommPIN %>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+
+
+  
+
+
+
+    <div class="card mb-4">
+
+        <div class="card-header bg-info bg-gradient fw-bold">
+            Proposed Locations
+        </div>
+
+        <div style="overflow-x:auto">
+
+      
+        <asp:GridView ID="gvLocation"
+            runat="server"
+            CssClass="table table-bordered table-striped"
+            AutoGenerateColumns="false"
+            EmptyDataText="No proposed locations added yet.">
+
+            <Columns>
+                <asp:TemplateField HeaderText="No.">
+                    <ItemTemplate>
+                        <%# Container.DataItemIndex + 1 %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                <asp:BoundField DataField="State" HeaderText="State" />
+                <asp:BoundField DataField="District" HeaderText="District" />
+                <asp:BoundField DataField="Tehsil" HeaderText="Tehsil" />
+                <asp:BoundField DataField="Block" HeaderText="Block" />
+                <asp:BoundField DataField="PIN_Code" HeaderText="PIN" />
+                
+         <asp:BoundField DataField="VillageMohalla1" HeaderText="Village/Mohalla 1" />
+         <asp:BoundField DataField="VillageMohalla2" HeaderText="Village/Mohalla 2" />
+         <asp:BoundField DataField="VillageMohalla3" HeaderText="Village/Mohalla 3" />
+         <asp:BoundField DataField="VillageMohalla4" HeaderText="Village/Mohalla 4" />
+         <asp:BoundField DataField="VillageMohalla5" HeaderText="Village/Mohalla 5" />
+            </Columns>
+        </asp:GridView>
+              </div>
+    </div>
+
+
+    <div style="display:flex; justify-content:center; ">
+        <asp:Button runat="server" ID="btnNext" CssClass="btn btn-primary" Text="Nex" OnClick="btnNext_Click" />
+    </div>
+    
+
+</div>
+
+<% } %>
+
+</div>
+</asp:Content>
+

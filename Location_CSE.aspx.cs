@@ -65,7 +65,7 @@ public partial class Location_CSE : System.Web.UI.Page
     {
         if (gvLocation.Rows.Count > 0)
         {
-            Response.Redirect("IA_Review.aspx");
+            Response.Redirect("Review_CSE.aspx");
         }
         else
         {
@@ -91,6 +91,12 @@ public partial class Location_CSE : System.Web.UI.Page
             prms.Add("@Tehsil", txtTehsil.Text.Trim());
             prms.Add("@Block", txtBlock.Text.Trim());
             prms.Add("@PIN_Code", txtPIN.Text.Trim());
+
+            prms.Add("@VillageMohalla1", txtVillageMohalla1.Text.Trim());
+            prms.Add("@VillageMohalla2", txtVillageMohalla2.Text.Trim());
+            prms.Add("@VillageMohalla3", txtVillageMohalla3.Text.Trim());
+            prms.Add("@VillageMohalla4", txtVillageMohalla4.Text.Trim());
+            prms.Add("@VillageMohalla5", txtVillageMohalla5.Text.Trim());
 
             DataTable dt = DatabaseHelper.GET_DataTable(
                 "usp_Upsert_IA_ProposedLocation", prms);
@@ -169,6 +175,12 @@ public partial class Location_CSE : System.Web.UI.Page
         txtBlock.Text = dr["Block"].ToString();
         txtPIN.Text = dr["PIN_Code"].ToString();
 
+        txtVillageMohalla1.Text = dr["VillageMohalla1"].ToString();
+        txtVillageMohalla2.Text = dr["VillageMohalla2"].ToString();
+        txtVillageMohalla3.Text = dr["VillageMohalla3"].ToString();
+        txtVillageMohalla4.Text = dr["VillageMohalla4"].ToString();
+        txtVillageMohalla5.Text = dr["VillageMohalla5"].ToString();
+
         ScriptManager.RegisterStartupScript(
             Page,
             Page.GetType(),
@@ -245,6 +257,12 @@ public partial class Location_CSE : System.Web.UI.Page
         txtTehsil.Text = "";
         txtBlock.Text = "";
         txtPIN.Text = "";
+
+        txtVillageMohalla1.Text = "";
+        txtVillageMohalla2.Text = "";
+        txtVillageMohalla3.Text = "";
+        txtVillageMohalla4.Text = "";
+        txtVillageMohalla5.Text = "";
     }
 
 

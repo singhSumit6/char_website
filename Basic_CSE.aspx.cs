@@ -9,9 +9,8 @@ public partial class Basic_CSE : System.Web.UI.Page
 {
     private int reg_id;
 
-    private string existingRCFile = "";
-    private string existingMOAFile = "";
-    private string existingPANFile = "";
+    private string existingCSEFile = "";
+    private string existingAadhaarFile = "";
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -24,7 +23,6 @@ public partial class Basic_CSE : System.Web.UI.Page
         {
             ((MasterCSE)this.Master).SetActiveStep(1);
 
-            ddlRegState.DataBind();
             ddlCommState.DataBind();
 
             GetExistingRecord(reg_id);
@@ -37,9 +35,8 @@ public partial class Basic_CSE : System.Web.UI.Page
 
     private void LoadExistingFilePaths(int regId)
     {
-        existingRCFile = "";
-        existingMOAFile = "";
-        existingPANFile = "";
+        existingCSEFile = "";
+        existingAadhaarFile = "";
 
         Dictionary<string, object> prms =
             new Dictionary<string, object>();
@@ -54,17 +51,14 @@ public partial class Basic_CSE : System.Web.UI.Page
 
         DataRow dr = dt.Rows[0];
 
-        existingRCFile = dr["RC_File"] == DBNull.Value
+        existingCSEFile = dr["RC_File"] == DBNull.Value
             ? ""
             : Convert.ToString(dr["RC_File"]);
 
-        existingMOAFile = dr["MOA_File"] == DBNull.Value
-            ? ""
-            : Convert.ToString(dr["MOA_File"]);
 
-        existingPANFile = dr["PAN_File"] == DBNull.Value
+        existingAadhaarFile = dr["Aadhaar_File"] == DBNull.Value
             ? ""
-            : Convert.ToString(dr["PAN_File"]);
+            : Convert.ToString(dr["Aadhaar_File"]);
     }
 
     private void GetExistingRecord(int regId)
@@ -87,35 +81,20 @@ public partial class Basic_CSE : System.Web.UI.Page
 
 
         hfBasicId.Value = dr["Id"].ToString();
-
         txtOrgName.Text = dr["OrgName"].ToString();
-        txtPAN.Text = dr["PAN"].ToString();
-        txtWebsite.Text = dr["Website"].ToString();
-
         txtOrgMobile.Text = dr["OrgMobile"].ToString();
         txtOrgEmail.Text = dr["OrgEmail"].ToString();
 
-        SelectDropDown(ddlOrgType, dr["OrgType"].ToString());
 
-        txtRegNo.Text = dr["RegistrationNumber"].ToString();
-
-        if (dr["RegistrationDate"] != DBNull.Value)
+        if (dr["DateOfBirth"] != DBNull.Value)
         {
-            txtRegDate.Text = Convert.ToDateTime(
-                dr["RegistrationDate"]).ToString("yyyy-MM-dd");
+            txtDob.Text = Convert.ToDateTime(
+                dr["DateOfBirth"]).ToString("yyyy-MM-dd");
         }
 
+        txtAadhaar.Text = dr["Aadhaar"].ToString();
+
         // Registered address
-        txtRegAddress.Text = dr["RegAddress"].ToString();
-        //  txtRegTehsil.Text = dr["RegTehsil"].ToString();
-        txtRegPIN.Text = dr["RegPIN"].ToString();
-
-        SelectState(ddlRegState, dr["RegState"].ToString());
-
-        BindDistricts(
-            ddlRegDistrict,
-            ddlRegState.SelectedValue,
-            dr["RegDistrict"].ToString());
 
         // Communication address
         txtCommAddress.Text = dr["CommAddress"].ToString();
@@ -127,25 +106,16 @@ public partial class Basic_CSE : System.Web.UI.Page
             ddlCommDistrict,
             ddlCommState.SelectedValue,
             dr["CommDistrict"].ToString());
-
-        // Authorized signatory
-        txtAuthName.Text = dr["AuthName"].ToString();
-        txtAuthDesig.Text = dr["AuthDesig"].ToString();
-        txtAuthMobile.Text = dr["AuthMobile"].ToString();
-        txtAuthEmail.Text = dr["AuthEmail"].ToString();
-
+       
         // Files 
-        existingRCFile = dr["RC_File"] == DBNull.Value
+        existingCSEFile = dr["RC_File"] == DBNull.Value
                         ? ""
                         : dr["RC_File"].ToString();
 
-        existingMOAFile = dr["MOA_File"] == DBNull.Value
-            ? ""
-            : dr["MOA_File"].ToString();
 
-        existingPANFile = dr["PAN_File"] == DBNull.Value
+        existingAadhaarFile = dr["Aadhaar_File"] == DBNull.Value
             ? ""
-            : dr["PAN_File"].ToString();
+            : dr["Aadhaar_File"].ToString();
     }
 
     private void SelectDropDown(DropDownList ddl, string value)
@@ -220,14 +190,6 @@ public partial class Basic_CSE : System.Web.UI.Page
         }
     }
 
-    protected void ddlRegState_SelectedIndexChanged(
-        object sender, EventArgs e)
-    {
-        BindDistricts(
-            ddlRegDistrict,
-            ddlRegState.SelectedValue);
-    }
-
     protected void ddlCommState_SelectedIndexChanged(
         object sender, EventArgs e)
     {
@@ -240,24 +202,7 @@ public partial class Basic_CSE : System.Web.UI.Page
     // SAME ADDRESS
     // =====================================================
 
-    protected void chkSameAddress_CheckedChanged(
-        object sender, EventArgs e)
-    {
-        if (!chkSameAddress.Checked)
-            return;
-
-        txtCommAddress.Text = txtRegAddress.Text;
-        txtCommPIN.Text = txtRegPIN.Text;
-
-        SelectState(
-            ddlCommState,
-            ddlRegState.SelectedValue);
-
-        BindDistricts(
-            ddlCommDistrict,
-            ddlCommState.SelectedValue,
-            ddlRegDistrict.SelectedValue);
-    }
+ 
 
     // =====================================================
     // FILE VALIDATION
@@ -271,22 +216,16 @@ public partial class Basic_CSE : System.Web.UI.Page
 
         switch (validator.ID)
         {
-            case "cvRC":
+            case "cvCSE":
                 args.IsValid =
-                    fuRC.HasFile ||
-                    !string.IsNullOrWhiteSpace(existingRCFile);
+                    fuCSE.HasFile ||
+                    !string.IsNullOrWhiteSpace(existingCSEFile);
                 break;
 
-            case "cvMOA":
+            case "cvAADHAAR":
                 args.IsValid =
-                    fuMOA.HasFile ||
-                    !string.IsNullOrWhiteSpace(existingMOAFile);
-                break;
-
-            case "cvPAN":
-                args.IsValid =
-                    fuPAN.HasFile ||
-                    !string.IsNullOrWhiteSpace(existingPANFile);
+                    fuAadhaar.HasFile ||
+                    !string.IsNullOrWhiteSpace(existingAadhaarFile);
                 break;
 
             default:
@@ -351,10 +290,15 @@ public partial class Basic_CSE : System.Web.UI.Page
             prms.Add("@Reg_Id", reg_id);
 
             // Organization details
-            prms.Add("@OrgType", ddlOrgType.SelectedValue);
-            prms.Add("@RegistrationNumber", txtRegNo.Text.Trim());
-            prms.Add("@RegistrationDate",
-                Convert.ToDateTime(txtRegDate.Text));
+            //prms.Add("@OrgType", ddlOrgType.SelectedValue);
+            //prms.Add("@RegistrationNumber", txtRegNo.Text.Trim());
+            //prms.Add("@RegistrationDate",
+            //    Convert.ToDateTime(txtRegDate.Text));
+
+            prms.Add("@DateOfBirth",
+                Convert.ToDateTime(txtDob.Text));
+            prms.Add("@AadhaarNo",
+                txtAadhaar.Text);
 
             // Communication address
             prms.Add("@CommAddress", txtCommAddress.Text.Trim());
@@ -363,39 +307,34 @@ public partial class Basic_CSE : System.Web.UI.Page
             prms.Add("@CommPIN", txtCommPIN.Text.Trim());
 
             // Registered address
-            prms.Add("@RegAddress", txtRegAddress.Text.Trim());
-            prms.Add("@RegState", ddlRegState.SelectedItem.Text);
-            prms.Add("@RegDistrict", ddlRegDistrict.SelectedValue);
-            prms.Add("@RegPIN", txtRegPIN.Text.Trim());
+            //prms.Add("@RegAddress", txtRegAddress.Text.Trim());
+            //prms.Add("@RegState", ddlRegState.SelectedItem.Text);
+            //prms.Add("@RegDistrict", ddlRegDistrict.SelectedValue);
+            //prms.Add("@RegPIN", txtRegPIN.Text.Trim());
 
             // Contact details
             prms.Add("@OrgMobile", txtOrgMobile.Text.Trim());
             prms.Add("@OrgEmail", txtOrgEmail.Text.Trim());
-            prms.Add("@Website", txtWebsite.Text.Trim());
+           // prms.Add("@Website", txtWebsite.Text.Trim());
 
             // Authorized signatory
-            prms.Add("@AuthName", txtAuthName.Text.Trim());
-            prms.Add("@AuthDesig", txtAuthDesig.Text.Trim());
-            prms.Add("@AuthMobile", txtAuthMobile.Text.Trim());
-            prms.Add("@AuthEmail", txtAuthEmail.Text.Trim());
+            //prms.Add("@AuthName", txtAuthName.Text.Trim());
+            //prms.Add("@AuthDesig", txtAuthDesig.Text.Trim());
+            //prms.Add("@AuthMobile", txtAuthMobile.Text.Trim());
+            //prms.Add("@AuthEmail", txtAuthEmail.Text.Trim());
 
             //prms.Add("@RegTehsil", txtRegTehsil.Text.Trim());
-            string rcFile = fuRC.HasFile
-                    ? SaveFile(fuRC)
-                    : existingRCFile;
+            string rcFile = fuCSE.HasFile
+                    ? SaveFile(fuCSE)
+                    : existingCSEFile;
 
-            string moaFile = fuMOA.HasFile
-                ? SaveFile(fuMOA)
-                : existingMOAFile;
-
-            string panFile = fuPAN.HasFile
-                ? SaveFile(fuPAN)
-                : existingPANFile;
+            string panFile = fuAadhaar.HasFile
+                ? SaveFile(fuAadhaar)
+                : existingAadhaarFile;
 
             // Save uploaded documents
             prms.Add("@RC_File", rcFile);
-            prms.Add("@MOA_File", moaFile);
-            prms.Add("@PAN_File", panFile);
+            prms.Add("@Aadhaar_File", panFile);
 
             DataTable dt = DatabaseHelper.GET_DataTable(
                 "usp_Upsert_IA_BasicDetail", prms);

@@ -23,7 +23,7 @@
 
          <!-- GRID -->
 
-
+         <div style="overflow-x:auto">
          <asp:GridView ID="gvLocation"
              runat="server"
              CssClass="table table-bordered table-striped"
@@ -42,8 +42,13 @@
                  <asp:BoundField DataField="Tehsil" HeaderText="Tehsil" />
                  <asp:BoundField DataField="Block" HeaderText="Block" />
                  <asp:BoundField DataField="PIN_Code" HeaderText="PIN" />
+                 <asp:BoundField DataField="VillageMohalla1" HeaderText="Village/Mohalla 1" />
+                 <asp:BoundField DataField="VillageMohalla2" HeaderText="Village/Mohalla 2" />
+                 <asp:BoundField DataField="VillageMohalla3" HeaderText="Village/Mohalla 3" />
+                 <asp:BoundField DataField="VillageMohalla4" HeaderText="Village/Mohalla 4" />
+                 <asp:BoundField DataField="VillageMohalla5" HeaderText="Village/Mohalla 5" />
 
-                 <asp:TemplateField HeaderText="Action">
+                 <asp:TemplateField HeaderText="Action" HeaderStyle-Width="10%" >
                      <ItemTemplate>
                          <asp:LinkButton ID="btnEditLocation"
                              runat="server"
@@ -63,8 +68,10 @@
                              OnClientClick="return confirm('Are you sure you want to delete this location?');" />
                      </ItemTemplate>
                  </asp:TemplateField>
+
              </Columns>
          </asp:GridView>
+         </div>
 
 
          
@@ -144,6 +151,51 @@
                              CssClass="form-control"
                              MaxLength="6"
                              TextMode="Number" />
+                     </div>
+
+                     <div class="col-md-6 mb-3">
+                         <label>Village / Mohalla 1 <span class="text-danger">*</span></label>
+                         <asp:TextBox ID="txtVillageMohalla1"
+                             runat="server"
+                             CssClass="form-control"
+                             MaxLength="200"
+                             placeholder="Enter Village / Mohalla 1" />
+                     </div>
+
+                     <div class="col-md-6 mb-3">
+                         <label>Village / Mohalla 2</label>
+                         <asp:TextBox ID="txtVillageMohalla2"
+                             runat="server"
+                             CssClass="form-control"
+                             MaxLength="200"
+                             placeholder="Enter Village / Mohalla 2" />
+                     </div>
+
+                     <div class="col-md-6 mb-3">
+                         <label>Village / Mohalla 3</label>
+                         <asp:TextBox ID="txtVillageMohalla3"
+                             runat="server"
+                             CssClass="form-control"
+                             MaxLength="200"
+                             placeholder="Enter Village / Mohalla 3" />
+                     </div>
+
+                     <div class="col-md-6 mb-3">
+                         <label>Village / Mohalla 4</label>
+                         <asp:TextBox ID="txtVillageMohalla4"
+                             runat="server"
+                             CssClass="form-control"
+                             MaxLength="200"
+                             placeholder="Enter Village / Mohalla 4" />
+                     </div>
+
+                     <div class="col-md-6 mb-3">
+                         <label>Village / Mohalla 5</label>
+                         <asp:TextBox ID="txtVillageMohalla5"
+                             runat="server"
+                             CssClass="form-control"
+                             MaxLength="200"
+                             placeholder="Enter Village / Mohalla 5" />
                      </div>
 
                  </div>

@@ -109,8 +109,8 @@
                              </div>
 
                              <div class="col step">
-                                 <div id="step6" runat="server" class="step-circle">5</div>
-                                 <div><a href="IA_Review.aspx">Review</a></div>
+                                 <div id="step6" runat="server" class="step-circle">3</div>
+                                 <div><a href="Review_CSE.aspx">Review</a></div>
                              </div>
 
 
